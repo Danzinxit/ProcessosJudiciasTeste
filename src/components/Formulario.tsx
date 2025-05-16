@@ -30,10 +30,16 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         <input
           type="text"
           required
+          pattern="[0-9]+"
           value={formData.case_number}
-          onChange={(e) => setFormData({ ...formData, case_number: e.target.value })}
+          onChange={(e) => setFormData({ ...formData, case_number: e.target.value.replace(/\D/g, '') })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          title="Digite apenas números"
+          inputMode="numeric"
         />
+        <span className="text-xs text-red-500">
+          Digite apenas números
+        </span>
       </div>
 
       <div>
