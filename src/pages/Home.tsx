@@ -5,6 +5,8 @@ import { supabase } from '../lib/supabase';
 import { Case, CaseUpdate } from '../types';
 import { CaseForm } from '../components/Formulario';
 import { UpdateForm } from '../components/AtualizacaoFormulario';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Componente principal da página Home
 export default function Home() {
@@ -41,7 +43,13 @@ export default function Home() {
     if (!error) {
       fetchCases();
       setShowForm(false);
-      alert(data.state === 'MG' ? 'Processo de MG criado com sucesso' : 'Processo fora de MG criado com sucesso');
+      toast.success(
+        data.state === 'MG'
+          ? 'Processo de MG criado com sucesso!'
+          : 'Processo fora de MG criado com sucesso!'
+      );
+    } else {
+      toast.error(`Erro ao criar processo: ${error.message}`);
     }
   };
 
@@ -51,19 +59,51 @@ export default function Home() {
     if (!error) {
       fetchCases();
       setEditingCase(null);
+      toast.success('Processo atualizado com sucesso!');
+    } else {
+      toast.error(`Erro ao atualizar processo: ${error.message}`);
     }
   };
 
   const handleDeleteCase = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este processo?')) return;
-    const { error } = await supabase.from('cases').delete().eq('id', id);
-    if (!error) fetchCases();
+    toast.info(
+      <span>
+        Tem certeza que deseja excluir este processo?
+        <button
+          className="ml-4 px-2 py-1 bg-red-600 text-white rounded"
+          onClick={async () => {
+            const { error } = await supabase.from('cases').delete().eq('id', id);
+            if (!error) {
+              fetchCases();
+              toast.success('Processo excluído com sucesso!');
+            } else {
+              toast.error(`Erro ao excluir processo: ${error.message}`);
+            }
+            toast.dismiss();
+          }}
+        >
+          Excluir
+        </button>
+        <button
+          className="ml-2 px-2 py-1 bg-gray-300 rounded"
+          onClick={() => toast.dismiss()}
+        >
+          Cancelar
+        </button>
+      </span>,
+      { autoClose: false }
+    );
   };
 
   // Funções de manipulação dos andamentos
   const handleCreateUpdate = async (data: Omit<CaseUpdate, 'id' | 'created_at'>) => {
     const { error } = await supabase.from('case_updates').insert(data);
-    if (!error) fetchUpdates(data.case_id);
+    if (!error) {
+      fetchUpdates(data.case_id);
+      toast.success('Andamento adicionado com sucesso!');
+    } else {
+      toast.error(`Erro ao adicionar andamento: ${error.message}`);
+    }
   };
 
   const handleUpdateUpdate = async (data: Omit<CaseUpdate, 'created_at'>) => {
@@ -74,14 +114,41 @@ export default function Home() {
       .eq('id', editingUpdate.id);
     if (!error) {
       fetchUpdates(editingUpdate.case_id);
-      setEditingUpdate(null);// Limpa o estado para fechar o modo edição
+      setEditingUpdate(null);
+      toast.success('Andamento atualizado com sucesso!');
+    } else {
+      toast.error(`Erro ao atualizar andamento: ${error.message}`);
     }
   };
 
   const handleDeleteUpdate = async (updateId: string, caseId: string) => {
-    if (!confirm('Tem certeza que deseja excluir este andamento?')) return;
-    const { error } = await supabase.from('case_updates').delete().eq('id', updateId);
-    if (!error) fetchUpdates(caseId);
+    toast.info(
+      <span>
+        Tem certeza que deseja excluir este andamento?
+        <button
+          className="ml-4 px-2 py-1 bg-red-600 text-white rounded"
+          onClick={async () => {
+            const { error } = await supabase.from('case_updates').delete().eq('id', updateId);
+            if (!error) {
+              fetchUpdates(caseId);
+              toast.success('Andamento excluído com sucesso!');
+            } else {
+              toast.error(`Erro ao excluir andamento: ${error.message}`);
+            }
+            toast.dismiss();
+          }}
+        >
+          Excluir
+        </button>
+        <button
+          className="ml-2 px-2 py-1 bg-gray-300 rounded"
+          onClick={() => toast.dismiss()}
+        >
+          Cancelar
+        </button>
+      </span>,
+      { autoClose: false }
+    );
   };
 
   // Funções auxiliares
@@ -159,7 +226,9 @@ export default function Home() {
                         <span className="px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-700  font-semibold">{case_.state}</span>
                       </div>
                       <div className="text-gray-500 text-sm mb-2">{case_.client} • {case_.lawyer}</div>
-                      <div className="text-gray-400 text-xs">Aberto em {new Date(case_.opened_at).toLocaleDateString()}</div>
+                      <div className="text-gray-400 text-xs">
+                        Aberto em {case_.opened_at.split('-').reverse().join('/')}
+                      </div>
                     </div>
                     {/* Botões de ação */}
                     <div className="flex items-center gap-2">
@@ -249,6 +318,7 @@ export default function Home() {
             )}
           </ul>
         )}
+        <ToastContainer position="top-right" autoClose={4000} />
       </div>
     </div>
   );
