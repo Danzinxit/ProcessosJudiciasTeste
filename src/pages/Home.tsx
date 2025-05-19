@@ -212,7 +212,7 @@ export default function Home() {
                           <div key={update.id} className="flex justify-between items-start p-4 bg-indigo-50 rounded-xl">
                             <div>
                               <p className="text-xs text-indigo-600 font-semibold">
-                                {new Date(update.date).toLocaleDateString()}
+                                {update.date.split('-').reverse().join('/')}
                               </p>
                               <p className="mt-1 text-sm text-gray-700">{update.description}</p>
                             </div>
