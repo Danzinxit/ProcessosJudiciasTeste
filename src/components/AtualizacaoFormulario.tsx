@@ -1,19 +1,24 @@
+// Importações necessárias
 import React, { useEffect, useState } from 'react';
 import { CaseUpdate } from '../types';
 
+// Props do formulário
 interface UpdateFormProps {
   onSubmit: (data: Omit<CaseUpdate, 'id' | 'created_at'>) => void;
   caseId: string;
   initialData?: Partial<Omit<CaseUpdate, 'id' | 'created_at'>>;
 }
 
+// Componente principal
 export function UpdateForm({ onSubmit, caseId, initialData }: UpdateFormProps) {
+  // Estado do formulário
   const [formData, setFormData] = useState({
     date: '',
     description: '',
     case_id: caseId,
   });
 
+  // Atualiza o formulário quando houver dados iniciais
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -30,6 +35,7 @@ export function UpdateForm({ onSubmit, caseId, initialData }: UpdateFormProps) {
     }
   }, [initialData, caseId]);
 
+  // Função de submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -38,6 +44,7 @@ export function UpdateForm({ onSubmit, caseId, initialData }: UpdateFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Campo de data */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Data
@@ -51,6 +58,7 @@ export function UpdateForm({ onSubmit, caseId, initialData }: UpdateFormProps) {
         />
       </div>
 
+      {/* Campo de descrição */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Descrição
@@ -64,6 +72,7 @@ export function UpdateForm({ onSubmit, caseId, initialData }: UpdateFormProps) {
         />
       </div>
 
+      {/* Botão de envio */}
       <button
         type="submit"
         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

@@ -1,12 +1,15 @@
 import React from 'react';
 import { Case } from '../types';
 
+// Props do formulário
 interface CaseFormProps {
   onSubmit: (data: Omit<Case, 'id' | 'created_at'>) => void;
   initialData?: Case;
 }
 
+// Componente principal
 export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
+  // Estado inicial do formulário
   const [formData, setFormData] = React.useState({
     case_number: initialData?.case_number || '',
     opened_at: initialData?.opened_at || '',
@@ -16,6 +19,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
     state: initialData?.state || '',
   });
 
+  // Manipulador do envio do formulário
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -23,6 +27,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Campo de número do processo - aceita apenas números */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Número do Processo
@@ -42,6 +47,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         </span>
       </div>
 
+      {/* Campo de data de abertura */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Data de Abertura
@@ -55,6 +61,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         />
       </div>
 
+      {/* Campo de descrição do processo */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Descrição
@@ -68,6 +75,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         />
       </div>
 
+      {/* Campo de nome do cliente */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Cliente
@@ -81,6 +89,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         />
       </div>
 
+      {/* Campo de nome do advogado */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Advogado
@@ -94,6 +103,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         />
       </div>
 
+      {/* Campo de seleção de estado (UF) */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           UF
@@ -111,6 +121,7 @@ export function CaseForm({ onSubmit, initialData }: CaseFormProps) {
         </select>
       </div>
 
+      {/* Botão de envio do formulário */}
       <button
         type="submit"
         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

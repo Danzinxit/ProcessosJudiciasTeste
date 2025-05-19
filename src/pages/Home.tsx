@@ -1,3 +1,4 @@
+// Importações necessárias
 import React, { useState } from 'react';
 import { PlusCircle, ArrowLeft, Pencil, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -5,9 +6,9 @@ import { Case, CaseUpdate } from '../types';
 import { CaseForm } from '../components/Formulario';
 import { UpdateForm } from '../components/AtualizacaoFormulario';
 
-
-
+// Componente principal da página Home
 export default function Home() {
+  // Estados do componente
   const [cases, setCases] = React.useState<Case[]>([]);
   const [updates, setUpdates] = React.useState<Record<string, CaseUpdate[]>>({});
   const [showForm, setShowForm] = React.useState(false);
@@ -15,10 +16,12 @@ export default function Home() {
   const [expandedCase, setExpandedCase] = React.useState<string | null>(null);
   const [editingUpdate, setEditingUpdate] = useState<CaseUpdate | null>(null);
 
+  // Carrega os processos ao iniciar
   React.useEffect(() => {
     fetchCases();
   }, []);
 
+  // Funções de manipulação dos processos
   const fetchCases = async () => {
     const { data } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
     if (data) setCases(data);
@@ -57,6 +60,7 @@ export default function Home() {
     if (!error) fetchCases();
   };
 
+  // Funções de manipulação dos andamentos
   const handleCreateUpdate = async (data: Omit<CaseUpdate, 'id' | 'created_at'>) => {
     const { error } = await supabase.from('case_updates').insert(data);
     if (!error) fetchUpdates(data.case_id);
@@ -70,7 +74,7 @@ export default function Home() {
       .eq('id', editingUpdate.id);
     if (!error) {
       fetchUpdates(editingUpdate.case_id);
-      setEditingUpdate(null); // Limpa o estado para fechar o modo edição
+      setEditingUpdate(null);// Limpa o estado para fechar o modo edição
     }
   };
 
@@ -80,6 +84,7 @@ export default function Home() {
     if (!error) fetchUpdates(caseId);
   };
 
+  // Funções auxiliares
   const toggleExpand = (caseId: string) => {
     if (expandedCase === caseId) {
       setExpandedCase(null);
@@ -94,14 +99,17 @@ export default function Home() {
     setEditingCase(null);
   };
 
+  // Renderização do componente
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
       <div className="max-w-3xl mx-auto py-10 px-4">
+        {/* Cabeçalho */}
         <header className="mb-10 flex flex-col items-center">
           <h1 className="text-4xl font-extrabold text-blue-400 mb-2 tracking-tight">Processos Judiciais</h1>
           <p className="text-gray-500 text-lg">Gerencia os processos</p>
         </header>
 
+        {/* Botão de novo processo */}
         <div className="flex justify-end mb-6">
           {!showForm && !editingCase && (
             <button
@@ -114,6 +122,7 @@ export default function Home() {
           )}
         </div>
 
+        {/* Formulário de processo */}
         {(showForm || editingCase) && (
           <div className="mb-8 bg-white rounded-2xl shadow-lg p-8 border border-indigo-100">
             <div className="flex items-center mb-4">
@@ -135,12 +144,15 @@ export default function Home() {
           </div>
         )}
 
+        {/* Lista de processos */}
         {!showForm && !editingCase && (
           <ul className="space-y-6">
             {cases.map((case_) => (
               <li key={case_.id}>
+                {/* Card do processo */}
                 <div className="bg-white rounded-2xl shadow p-6 border border-indigo-100 transition hover:shadow-lg">
                   <div className="flex items-center justify-between">
+                    {/* Informações do processo */}
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-green-700 font-bold text-lg">{case_.case_number}</span>
@@ -149,6 +161,7 @@ export default function Home() {
                       <div className="text-gray-500 text-sm mb-2">{case_.client} • {case_.lawyer}</div>
                       <div className="text-gray-400 text-xs">Aberto em {new Date(case_.opened_at).toLocaleDateString()}</div>
                     </div>
+                    {/* Botões de ação */}
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setEditingCase(case_)}
@@ -178,6 +191,7 @@ export default function Home() {
                     </div>
                   </div>
 
+                  {/* Seção de andamentos */}
                   {expandedCase === case_.id && (
                     <div className="mt-6">
                       <div className="mb-4">
@@ -189,6 +203,7 @@ export default function Home() {
                           initialData={editingUpdate && editingUpdate.case_id === case_.id ? editingUpdate : undefined}
                         />
                       </div>
+                      {/* Lista de andamentos */}
                       <div className="space-y-3">
                         {updates[case_.id]?.length === 0 && (
                           <div className="text-gray-400 text-sm">Nenhum andamento cadastrado.</div>
@@ -201,6 +216,7 @@ export default function Home() {
                               </p>
                               <p className="mt-1 text-sm text-gray-700">{update.description}</p>
                             </div>
+                            {/* Botões de ação do andamento */}
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => setEditingUpdate(update)}
@@ -225,6 +241,7 @@ export default function Home() {
                 </div>
               </li>
             ))}
+            {/* Mensagem quando não há processos */}
             {cases.length === 0 && (
               <div className="text-center text-gray-400 py-16 text-lg">
                 Nenhum processo cadastrado ainda.
