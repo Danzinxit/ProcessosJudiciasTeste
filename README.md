@@ -8,7 +8,7 @@ Sistema de gerenciamento de processos judiciais desenvolvido com React, TypeScri
 - TypeScript
 - Vite
 - TailwindCSS
-- Supabase (Banco de dados e Back-end utilizando supabase , banco de dados (PostgreSQL), API REST e gerenciamento de dados. Não há um backend Node.js customizado; o frontend React se comunica diretamente com o Supabase para todas as operações de CRUD.)
+- Supabase (Banco de dados e Back-end utilizando supabase , banco de dados (PostgreSQL), API REST e gerenciamento de dados. O frontend React se comunica diretamente com o Supabase para todas as operações de CRUD.)
 - ESLint
 - Lucide React (ícones)
 
